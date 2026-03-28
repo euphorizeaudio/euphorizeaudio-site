@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Support — Euphorize Audio</title>
+
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' 'unsafe-eval' https://www.google.com https://www.gstatic.com;
+    connect-src 'self' https://www.google.com http://167.71.85.179;
+    frame-src https://www.google.com;
+    img-src 'self' data: https://www.gstatic.com;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src https://fonts.gstatic.com;
+  ">
+
+  <script src="https://www.google.com/recaptcha/api.js?render=6LdnLZwsAAAAAAxRsMmhLsQhT6W-ISALaSzKKj96"></script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+.status-message {
+  margin-top: 12px;
+  padding: 10px 12px;
+  border-radius: 6px;
+  font-size: 14px;
+  display: none;
+}
+
+.status-message.success {
+  background: rgba(0, 255, 255, 0.12);
+  border: 1px solid #0ff;
+  color: #e6ffff;
+}
+
+.status-message.error {
+  background: rgba(255, 60, 60, 0.12);
+  border: 1px solid #ff3c3c;
+  color: #ffd6d6;
+}
+</style>
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      margin: 0;
+      background: #000;
+      color: #fff;
+    }
+
+    header {
+      padding: 30px 20px 10px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: 'Orbitron', sans-serif;
+      color: #0ff;
+      margin: 0;
+    }
+
+    main {
+      max-width: 700px;
+      margin: 0 auto;
+      padding: 20px;
+      color: #ccc;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    input, textarea {
+      background: #0b0b0b;
+      border: 1px solid #222;
+      color: #fff;
+      padding: 10px;
+      border-radius: 6px;
+    }
+
+    textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    button {
+      border: 1px solid #0ff;
+      background: #000;
+      color: #0ff;
+      padding: 10px;
+      cursor: pointer;
+      border-radius: 6px;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background: #0ff;
+      color: #000;
+    }
+
+    .status {
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    a {
+      display: inline-block;
+      margin-top: 15px;
+      color: #0ff;
+      text-decoration: none;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>Support</h1>
+  </header>
+
+  <main>
+    <form id="supportForm">
+      <input type="email" name="email" placeholder="Email" required />
+      <input type="text" name="issue" placeholder="Issue" required />
+      <textarea name="message" placeholder="Message" required></textarea>
+      <input type="file" name="screenshot" />
+      <button type="submit">Send</button>
+    </form>
+
+    <div id="supportStatus" class="status"></div>
+
+    <a href="../index.html">Back to Home</a>
+  </main>
+
+  <script>
+    async function getCaptchaToken() {
+      return new Promise((resolve, reject) => {
+        if (typeof grecaptcha === "undefined") {
+          reject("grecaptcha not loaded");
+          return;
+        }
+
+        grecaptcha.ready(() => {
+          grecaptcha.execute(
+            "6LdnLZwsAAAAAAxRsMmhLsQhT6W-ISALaSzKKj96",
+            { action: "support_ticket" }
+          )
+          .then(resolve)
+          .catch(reject);
+        });
+      });
+    }
+
+    document.getElementById("supportForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const form = e.target;
+      const statusEl = document.getElementById("supportStatus");
+
+      const email = form.email.value.trim();
+      const issue = form.issue.value.trim();
+      const message = form.message.value.trim();
+      const screenshotFile = form.screenshot.files[0];
+
+      if (!email || !issue || !message) return;
+
+      let captchaToken;
+
+      try {
+        captchaToken = await getCaptchaToken();
+      } catch (err) {
+        statusEl.textContent = "Captcha failed";
+        return;
+      }
+
+      const formData = new FormData();
+      formData.append("email", email);
+      formData.append("issue", issue);
+      formData.append("message", message);
+      formData.append("captcha_token", captchaToken);
+
+      if (screenshotFile) {
+        formData.append("screenshot", screenshotFile);
+      }
+
+      try {
+        const res = await fetch("http://167.71.85.179/support-ticket", {
+          method: "POST",
+          body: formData
+        });
+
+        const json = await res.json();
+
+        if (statusEl) {
+          statusEl.className = "status-message";
+          statusEl.style.display = "block";
+        }
+
+        if (json.status === "ok") {
+          if (statusEl) {
+            statusEl.classList.add("success");
+            statusEl.textContent = "Your message has been sent. Please wait for a callback.";
+          }
+        } else {
+          if (statusEl) {
+            statusEl.classList.add("error");
+            statusEl.textContent = "Error sending message. Please try again.";
+          }
+        }
+      } catch (err) {
+        if (statusEl) {
+          statusEl.classList.add("error");
+          statusEl.textContent = "Network error. Please try again.";
+        }
+      }
+    });
+  </script>
+</body>
+</html>
