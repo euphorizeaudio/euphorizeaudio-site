@@ -820,7 +820,151 @@
       padding: 0 6px 6px;
     }
 
+    @media (max-width: 900px) {
+      header {
+        padding: 40px 16px 6px;
+      }
+
+      header h1 {
+        font-size: 30px;
+      }
+
+      .corner-title {
+        left: 16px;
+        bottom: 16px;
+        font-size: 28px;
+        text-shadow: 0 0 6px #0ff;
+      }
+
+      .section-row {
+        padding: 0 12px 16px;
+        gap: 12px;
+      }
+
+      .section-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+        min-width: 0;
+      }
+
+      #mastering.section-card {
+        flex: 1 1 100%;
+        max-width: 100%;
+      }
+
+      .mastering-container {
+        max-width: 100%;
+      }
+
+      .mastering-container h2 {
+        font-size: 20px;
+        text-align: center;
+        padding-right: 0;
+        transform: none;
+      }
+
+      .mastering-row {
+        grid-template-columns: 1fr;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .bottom-row {
+        transform: none;
+        padding: 0 12px 20px;
+        justify-content: center;
+      }
+
+      .social-panel {
+        max-width: 100%;
+        width: 100%;
+        padding: 10px 14px;
+      }
+
+      .social-panel .footer-title {
+        text-align: left;
+      }
+
+      .social-panel .social-list,
+      .social-panel .legal-list {
+        align-items: flex-start;
+      }
+
+      .social-group {
+        align-items: flex-start;
+        text-align: left;
+      }
+
+      .social-group .footer-list {
+        justify-content: flex-start;
+      }
+
+      .overlay-inner {
+        width: 94%;
+        max-height: 84%;
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      }
+    }
+
+    @media (max-width: 600px) {
+      header h1 {
+        font-size: 24px;
+      }
+
+      .corner-title {
+        left: 10px;
+        bottom: 10px;
+        font-size: 22px;
+      }
+
+      .mastering-container h2 {
+        font-size: 18px;
+      }
+
+      .mastering-container .mode-btn,
+      .mastering-container .format-btn {
+        min-width: 0;
+        flex: 1;
+      }
+
+      #runBtn,
+      #stopBtn {
+        width: 100%;
+      }
+
+      .product-card h3 {
+        font-size: 11px;
+      }
+
+      .product-card p {
+        font-size: 9px;
+      }
+
+      .footer-list {
+        gap: 8px;
+      }
+
+      .social-panel .footer-list a {
+        font-size: 10px;
+      }
+
+      .overlay-inner {
+        grid-template-columns: 1fr;
+      }
+    }
+
   </style>
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-G4ZKH45SRQ"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);} 
+    gtag('js', new Date());
+
+    gtag('config', 'G-G4ZKH45SRQ');
+  </script>
 </head>
 <body>
   <div class="corner-title">
